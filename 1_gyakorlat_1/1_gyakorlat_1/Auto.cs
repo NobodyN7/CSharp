@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,12 @@ using System.Threading.Tasks;
 
 namespace autonevter
 {
-    class Auto
+    class Auto : Jarmu
     {
-        private string gyarto;
-        private string tipus;
+        static string[] motortipusokk = { "1.4", "1.6", "1.8", "2.0", "2.3" };
+        public static ArrayList motortipusok = new ArrayList(motortipusokk);
+        public static int letrehozottAutok = 0;
 
-        //Futási idejű konstans:
-        private readonly int evjarat;
 
         //Forditasi ideju konstans:
         //  private const int konstans = 1;
@@ -41,35 +41,15 @@ namespace autonevter
             set { motortipus = value; }
         }
 
-
-        public string Tipus
+        public Auto(string gyarto, string tipus, int evjarat, string motortipus, string uzemanyag, double atlagfogyasztas):base(gyarto, tipus, evjarat)
         {
-            get { return tipus; }
-            //set { tipus = value; }
-        }
-
-
-        public string Gyarto
-        {
-            get { return gyarto; }
-            //set { gyarto = value; }
-        }
-
-
-        public Auto(string gyarto, string tipus, int evjarat, string motortipus, string uzemanyag, double atlagfogyasztas)
-        {
-            this.gyarto = gyarto;
-            this.tipus = tipus;
-            this.evjarat = evjarat;
             this.motortipus = motortipus;
             this.uzemanyag = uzemanyag;
             this.atlagfogyasztas = atlagfogyasztas;
+            letrehozottAutok++;
         }
-        public Auto(string gyarto, string tipus, int evjarat, string motortipus)
+        public Auto(string gyarto, string tipus, int evjarat, string motortipus):base(gyarto, tipus, evjarat)
         {
-            this.gyarto = gyarto;
-            this.tipus = tipus;
-            this.evjarat = evjarat;
             this.motortipus = motortipus;
             this.uzemanyag = "benzin";
 
@@ -87,6 +67,7 @@ namespace autonevter
                 default:
                     break;
             }
+            letrehozottAutok++;
         }
         public void MotorCsere(string motortipus, string uzemanyag, double atlagfogyasztas)
         {
@@ -117,14 +98,29 @@ namespace autonevter
         /// <param name="tavolsag">tavolsag km-ben</param>
         /// <param name="uzemanyagAr">literenkénti forint egység ár</param>
         /// <returns></returns>
-        public int UzemanyagKoltsegSzamitas(int tavolsag, int uzemanyagAr)
+        public int UzemanyagKoltsegSzamitasForint(int tavolsag, int uzemanyagAr)
         {
             return (int)(atlagfogyasztas * tavolsag * uzemanyagAr / 100);
         }
 
+
+        public int UzemanyagKoltsegSzamitasEuro(int tavolsag, int uzemanyagAr, int arfolyam)
+        {
+            return (int)(atlagfogyasztas * tavolsag * uzemanyagAr / 100 / arfolyam);
+        }
+        public static int LetrehozottAutoSorszama()
+        {
+            return letrehozottAutok;
+        }
+
         public override string ToString()
         {
-            return "Auto: " + "|" + Gyarto + ", " + Tipus + ", " + evjarat + ", " + Motortipus + ", " + Uzemanyag + ", " + Atlagfogyasztas + "|";
+            return "Auto: " + "|" + Gyarto + ", " + Tipus + ", " + Evjarat + ", " + Motortipus + ", " + Uzemanyag + ", " + Atlagfogyasztas + "|";
+        }
+
+        public override int Sebesseg(int tavolsag, int idoOraban)
+        {
+            return tavolsag / idoOraban;
         }
     }
 }
